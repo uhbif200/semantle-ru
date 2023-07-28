@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+enum Morph {
+    ANY = 0;
+    VERB = 1;
+    NOUN = 2;
+}
+
+message WordInitRequest {
+    Morph morph = 1;
+}
+
+message WordInitResponse {
+    string word = 1;
+    Morph morph = 2;
+    repeated string similar_words = 3;
+}
+
+message SimilarityRequest {
+    string original_word = 1;
+    string test_word = 2;
+}
+
+message SimilarityResponse {
+    double similarity = 1;
+}
+
+service MorphModelService {
+    rpc WordInit(WordInitRequest) returns (WordInitResponse);
+    rpc Similarity(SimilarityRequest) returns (SimilarityResponse);
+}
