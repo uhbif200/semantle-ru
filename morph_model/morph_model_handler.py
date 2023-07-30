@@ -25,13 +25,15 @@ class MorphModelHandler:
     def get_random_word(self, morph = "ANY"):
         attempts = 0
         word: str
+        word_morph: str
+        word_with_morph: str
         word_match = False
         while attempts < word_generation_max_attempts and not word_match:
             attempts += 1
-            index = random.randint(0, len(self.__russian_words) - 1)
-            word = self.__russian_words[index]
+            word = random.choice(self.__russian_words)
             word_morph = self.morph_determine(word)
-            if not is_word_russian(word.split('_')[0]):
+            word_with_morph = word + '_' + word_morph
+            if not is_word_russian(word):
                 continue
             if not (morph == "ANY" or morph == word_morph):
                 continue
@@ -39,7 +41,7 @@ class MorphModelHandler:
                 continue
             word_match = True
         logging.info("Сегенерировано слово: %s, попыток: %i", word, attempts)
-        return word
+        return word_with_morph
     
     def get_similar_words(self, word: str, count: int = 1):
         return self.__model.most_similar(positive = [word], topn = count)

@@ -7,6 +7,8 @@ import semantleru_pb2_grpc
 import semantleru_pb2
 from semantleru_pb2 import (
     Morph,
+    Word,
+    SimilarWord,
     WordInitResponse,
     SimilarityResponse
 )
@@ -15,15 +17,21 @@ from morph_model.morph_model_handler import MorphModelHandler
 class MorphModelService(semantleru_pb2_grpc.MorphModelService):
     def __init__(self) -> None:
         super().__init__()
-        self._model_handler = MorphModelHandler()   
+        self._model_handler = MorphModelHandler()  
+         
     def WordInit(self, request, context):
         logging.info("Получен запрос на слово %s", morph_to_str(request.morph))
         random_word = self._model_handler.get_random_word(morph = morph_to_str(request.morph))
-        similar_words_gen = self._model_handler.get_similar_words_same_morph(random_word + '_' + morph_to_str(request.morph), 10)
+        random_word_text, random_word_morph = random_word.split('_')
+        similar_words_gen = self._model_handler.get_similar_words_same_morph(random_word, request.similar_words_count)
         similar_words = []
-        for (word, coef) in similar_words_gen:
-            similar_words.append(word)
-        return WordInitResponse(word = random_word, morph = request.morph, similar_words = similar_words)
+        for (word, similarity) in similar_words_gen:
+            text, morph = word.split('_')
+            similar_words.append(SimilarWord(word = Word(text = text, morph = morph), similarity = similarity))
+        response = WordInitResponse(word = Word(text = random_word_text, morph = random_word_morph))
+        response.similar_words.extend(similar_words)
+        return response
+    
     def Similarity(self, request, context):
         logging.info("Similarity")
         return SimilarityResponse(similarity = 0)

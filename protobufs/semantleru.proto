@@ -1,29 +1,45 @@
 syntax = "proto3";
 
+//Пара вспомогательных типов данных 
+
 enum Morph {
     ANY = 0;
     VERB = 1;
     NOUN = 2;
 }
 
+message Word {
+    string text = 1;
+    Morph morph = 2;
+}
+
+message SimilarWord {
+    Word word = 1;
+    double similarity = 2;
+}
+
+//Запросы и ответы
+
 message WordInitRequest {
     Morph morph = 1;
+    int32 similar_words_count = 2;
 }
 
 message WordInitResponse {
-    string word = 1;
-    Morph morph = 2;
-    repeated string similar_words = 3;
+    Word word = 1;
+    repeated SimilarWord similar_words = 2;
 }
 
 message SimilarityRequest {
-    string original_word = 1;
-    string test_word = 2;
+    Word original_word = 1;
+    Word test_word = 2;
 }
 
 message SimilarityResponse {
-    double similarity = 1;
+    SimilarWord word = 1;
 }
+
+//Микросервис собственной персоной
 
 service MorphModelService {
     rpc WordInit(WordInitRequest) returns (WordInitResponse);
