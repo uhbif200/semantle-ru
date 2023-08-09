@@ -1,6 +1,0 @@
-gensim==4.3.1
-grpcio==1.56.2
-matplotlib==3.7.2
-protobuf==4.23.4
-pymorphy2==0.9.1
-wget==3.2

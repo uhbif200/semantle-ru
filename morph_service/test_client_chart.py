@@ -1,13 +1,9 @@
 import grpc
-from semantleru_pb2 import (
-    Morph,
-    Word,
+from morph_pb2 import (
+    MorphMsg,
     WordInitRequest,
-    WordInitResponse,
-    SimilarityResponse
 )
-import semantleru_pb2_grpc
-
+import morph_pb2_grpc
 import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('Qt5Agg')
@@ -22,11 +18,11 @@ def plot_similar_words(original_word, similar_words):
 def run():
     with grpc.insecure_channel("localhost:50051") as channel:
         plt.figure()
-        client = semantleru_pb2_grpc.MorphModelServiceStub(channel)
+        client = morph_pb2_grpc.MorphModelServiceStub(channel)
         i = 0
         while i < 20:
             print("_____WORD INIT_____")
-            word_init_request = WordInitRequest(morph=Morph.NOUN, similar_words_count = 10)
+            word_init_request = WordInitRequest(morph=MorphMsg.NOUN, similar_words_count = 10)
             word_init_response = client.WordInit(word_init_request)
             print(f"Получено слово {word_init_response.word.text}, часть речи {word_init_response.word.morph}")
             plot_similar_words(word_init_response.word.text, word_init_response.similar_words)

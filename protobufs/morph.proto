@@ -2,41 +2,45 @@ syntax = "proto3";
 
 //Пара вспомогательных типов данных 
 
-enum Morph {
+enum MorphMsg {
     ANY = 0;
-    VERB = 1;
-    NOUN = 2;
+    UNKN = 1;
+    VERB = 2;
+    NOUN = 3;
+    PROPN = 4;
+    INFN = 5;
+    PRTF = 6;
 }
 
-message Word {
+message WordMsg {
     string text = 1;
-    Morph morph = 2;
+    MorphMsg morph = 2;
 }
 
-message SimilarWord {
-    Word word = 1;
+message SimilarWordMsg {
+    WordMsg word = 1;
     double similarity = 2;
 }
 
 //Запросы и ответы
 
 message WordInitRequest {
-    Morph morph = 1;
+    MorphMsg morph = 1;
     int32 similar_words_count = 2;
 }
 
 message WordInitResponse {
-    Word word = 1;
-    repeated SimilarWord similar_words = 2;
+    WordMsg word = 1;
+    repeated SimilarWordMsg similar_words = 2;
 }
 
 message SimilarityRequest {
-    Word original_word = 1;
-    Word test_word = 2;
+    WordMsg original_word = 1;
+    WordMsg test_word = 2;
 }
 
 message SimilarityResponse {
-    SimilarWord word = 1;
+    SimilarWordMsg word = 1;
 }
 
 //Микросервис собственной персоной
