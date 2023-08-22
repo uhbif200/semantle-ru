@@ -43,5 +43,7 @@ def run():
                 original_word = get_new_word(client)
             else:
                 print("Схожесть ", similarity)
+
+
 if __name__ == "__main__":
     run()
