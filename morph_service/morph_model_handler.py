@@ -16,7 +16,18 @@ class Morph(enum.Enum):
     NUM = 7,
     INTJ = 8,
     X = 9,
-    SYM = 10
+    SYM = 10,
+    ADJF = 11,
+    PREP = 12,
+    ADVB = 13,
+    PRCL = 14,
+    NPRO = 15,
+    CONJ = 16,
+    PRED = 17,
+    NUMR = 18,
+    ADJS = 19,
+    GRND = 20,
+    ADV = 21
 
 class Word:
     def __init__(self, text = "", morph: Morph = Morph.ANY):
@@ -28,7 +39,7 @@ class Word:
 class MorphModelHandler:
     def __init__(self):
         self.model = self.__load_model()
-    
+
     def similarity(self, word: Word, test_word: Word) -> float:
         return self.model.similarity(str(word), str(test_word))
     
@@ -61,20 +72,27 @@ class WordAnalyser():
         self.morph_analyser = pymorphy2.MorphAnalyzer()
         
     def convert_to_word(self, word: str) -> Word:
-        return Word(word, self.morph_determine(word))
-        
-    def morph_determine(self, word: str) -> str:
         parsed_word = self.morph_analyser.parse(word)[0]
-        if parsed_word.tag.POS:
-            return parsed_word.tag.POS 
-        else:
-            return "UNKN"
+        morph = Morph.UNKN
+        if parsed_word.tag.POS in Morph.__members__:
+            morph = Morph[parsed_word.tag.POS]
+        return Word(parsed_word.normal_form, morph)
+        
+    def morph_determine(self, word: str) -> Morph:
+        parsed_word = self.morph_analyser.parse(word)[0]
+        morph = parsed_word.tag.POS
+        if parsed_word.tag.POS in Morph.__members__:
+            return Morph[parsed_word.tag.POS]
+        return Morph.UNKN
+    
+    def normalize(self, word: str) -> str:
+        return self.morph_analyser.parse(word)[0].normal_form
         
     def append_morph(self, word: str) -> str:
         return word + '_' + self.morph_determine(word)
 
     def append_morph(self, word: Word) -> Word:
-        word.morph = Morph[self.morph_determine(word.text)]
+        word.morph = self.morph_determine(word.text)
         return word
 
 # формат файла для генератора слов:
