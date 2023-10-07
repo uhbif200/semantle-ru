@@ -1,20 +1,103 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width initial-scale=1.0">
     <title>Славянский гейминг</title>
     <link href="reset.css" rel="stylesheet" type="text/css">
     <link href="style.css" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        addEventListener("load", (event) => {});
+        onload = (event) => {
+            var canvas = document.getElementById('myCanvas');
+            var ctx = canvas.getContext('2d');
+            var canvasOffset=$("#myCanvas").offset();
+            var offsetX=canvasOffset.left;
+            var offsetY=canvasOffset.top;
+            var isDown=false;
+            var cx=canvas.width/2;
+            var cy=canvas.height/2;
+            var w;
+            var h;
+            var r=0;
+            var img = new Image();
+            img.src = 'img/colovrat.png';
+            img.onload = function(){
+                w=img.width;
+                h=img.height;
+                draw()
+            }
+
+            function draw(){
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                drawRotationHandle(true);
+                drawRect();
+            }
+        
+            function drawRect(){
+                ctx.save();
+                ctx.translate(cx,cy);
+                ctx.rotate(r);
+                ctx.drawImage(img,0,0,img.width,img.height,-w/2,-h/2,w,h);
+                ctx.restore();
+            }
+        
+            function drawRotationHandle(withFill){
+                ctx.save();
+                ctx.translate(cx,cy);
+                ctx.rotate(r);
+
+                if(withFill){
+                    ctx.fillStyle="blue";
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        
+            function handleMouseDown(e){
+              mouseX=parseInt(e.clientX-offsetX);
+              mouseY=parseInt(e.clientY-offsetY);
+              drawRotationHandle(false);
+              isDown=true;
+            }
+        
+            function handleMouseUp(e){
+              isDown=false;
+            }
+        
+            function handleMouseOut(e){
+              isDown=false;
+            }
+        
+            function handleMouseMove(e){
+              if(!isDown){return;}
+        
+              mouseX=parseInt(e.clientX-offsetX);
+              mouseY=parseInt(e.clientY-offsetY);
+              var dx=mouseX-cx;
+              var dy=mouseY-cy;
+              r=Math.atan2(dy,dx);
+              draw();
+            }
+        
+            $("#myCanvas").mousedown(function(e){handleMouseDown(e);});
+            $("#myCanvas").mousemove(function(e){handleMouseMove(e);});
+            $("#myCanvas").mouseup(function(e){handleMouseUp(e);});
+            $("#myCanvas").mouseout(function(e){handleMouseOut(e);});
+        };
+
+
+    </script>
 </head>
+
 <body>
     <div class="wrapper">
         <div class="content">
             <header class="header">
                 <div class="header__colovrat">
-                    <a href="/" class="header__logo-link">
-                        <img src="img/colovrat.png" alt="Logo" class="header__logo-png">
-                    </a>
+                    <canvas id="myCanvas" width="53" height="53"></canvas>
                 </div>
                 <nav class="header__nav">
                     <ul class="header__list">
@@ -40,7 +123,7 @@
                         <span class="input__label">Введите слово</span>
                     </label>
                     <button class="btn">Поехали</button>
-                </div> 
+                </div>
 
                 <table class="words__table">
                     <thead>
@@ -67,4 +150,5 @@
         </div>
     </div>
 </body>
+
 </html>
