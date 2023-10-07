@@ -22,8 +22,11 @@
             var w;
             var h;
             var r=0;
+            var dr=0;
             var img = new Image();
-            img.src = 'img/colovrat.png';
+            var dx;
+            var dy;
+                img.src = 'img/colovrat.png';
             img.onload = function(){
                 w=img.width;
                 h=img.height;
@@ -32,7 +35,7 @@
 
             function draw(){
                 ctx.clearRect(0,0,canvas.width,canvas.height);
-                drawRotationHandle(true);
+                drawRotationHandle();
                 drawRect();
             }
         
@@ -44,42 +47,56 @@
                 ctx.restore();
             }
         
-            function drawRotationHandle(withFill){
+            function drawRotationHandle(){
                 ctx.save();
                 ctx.translate(cx,cy);
                 ctx.rotate(r);
-
-                if(withFill){
-                    ctx.fillStyle="blue";
-                    ctx.fill();
-                }
                 ctx.restore();
             }
         
             function handleMouseDown(e){
               mouseX=parseInt(e.clientX-offsetX);
               mouseY=parseInt(e.clientY-offsetY);
-              drawRotationHandle(false);
+              drawRotationHandle();
               isDown=true;
             }
-        
+            
+            function rotationInertia(){
+                if(isDown == false && Math.abs(dr) > 0.001){
+                    r += dr * 10;
+                    dr -= (dr > 0 ? 0.001 : -0.001);
+                    draw();
+                    setTimeout(rotationInertia, 30);
+                }
+            }
+
             function handleMouseUp(e){
               isDown=false;
+              rotationInertia();
             }
         
             function handleMouseOut(e){
               isDown=false;
+              rotationInertia();
             }
         
             function handleMouseMove(e){
-              if(!isDown){return;}
-        
+              if(!isDown){return;}        
               mouseX=parseInt(e.clientX-offsetX);
               mouseY=parseInt(e.clientY-offsetY);
-              var dx=mouseX-cx;
-              var dy=mouseY-cy;
-              r=Math.atan2(dy,dx);
+              dx=mouseX-cx;
+              dy=mouseY-cy;
+              newr=Math.atan2(dy,dx);
+              dr = newr - r;
+              console.log(dr)
+              r = newr;
               draw();
+              setTimeout(()=>{
+                if(isDown){
+                    dr = 0
+                    console.log("stop")
+                }
+              }, 30)
             }
         
             $("#myCanvas").mousedown(function(e){handleMouseDown(e);});
