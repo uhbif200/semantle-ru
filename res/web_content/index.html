@@ -9,60 +9,59 @@
     <link href="style.css" rel="stylesheet" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
-        addEventListener("load", (event) => {});
         onload = (event) => {
             var canvas = document.getElementById('myCanvas');
             var ctx = canvas.getContext('2d');
-            var canvasOffset=$("#myCanvas").offset();
-            var offsetX=canvasOffset.left;
-            var offsetY=canvasOffset.top;
-            var isDown=false;
-            var cx=canvas.width/2;
-            var cy=canvas.height/2;
+            var canvasOffset = $("#myCanvas").offset();
+            var offsetX = canvasOffset.left;
+            var offsetY = canvasOffset.top;
+            var isDown = false;
+            var cx = canvas.width / 2;
+            var cy = canvas.height / 2;
             var w;
             var h;
-            var r=0;
-            var dr=0;
+            var r = 0;
+            var dr = 0;
             var img = new Image();
             var dx;
             var dy;
-                img.src = 'img/colovrat.png';
-            img.onload = function(){
-                w=img.width;
-                h=img.height;
+            img.src = 'img/colovrat.png';
+            img.onload = function () {
+                w = img.width;
+                h = img.height;
                 draw()
             }
 
-            function draw(){
-                ctx.clearRect(0,0,canvas.width,canvas.height);
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawRotationHandle();
                 drawRect();
             }
-        
-            function drawRect(){
+
+            function drawRect() {
                 ctx.save();
-                ctx.translate(cx,cy);
+                ctx.translate(cx, cy);
                 ctx.rotate(r);
-                ctx.drawImage(img,0,0,img.width,img.height,-w/2,-h/2,w,h);
+                ctx.drawImage(img, 0, 0, img.width, img.height, -w / 2, -h / 2, w, h);
                 ctx.restore();
             }
-        
-            function drawRotationHandle(){
+
+            function drawRotationHandle() {
                 ctx.save();
-                ctx.translate(cx,cy);
+                ctx.translate(cx, cy);
                 ctx.rotate(r);
                 ctx.restore();
             }
-        
-            function handleMouseDown(e){
-              mouseX=parseInt(e.clientX-offsetX);
-              mouseY=parseInt(e.clientY-offsetY);
-              drawRotationHandle();
-              isDown=true;
+
+            function handleMouseDown(e) {
+                mouseX = parseInt(e.clientX - offsetX);
+                mouseY = parseInt(e.clientY - offsetY);
+                drawRotationHandle();
+                isDown = true;
             }
-            
-            function rotationInertia(){
-                if(isDown == false && Math.abs(dr) > 0.001){
+
+            function rotationInertia() {
+                if (isDown == false && Math.abs(dr) > 0.001) {
                     r += dr * 10;
                     dr -= (dr > 0 ? 0.001 : -0.001);
                     draw();
@@ -70,41 +69,38 @@
                 }
             }
 
-            function handleMouseUp(e){
-              isDown=false;
-              rotationInertia();
+            function handleMouseUp(e) {
+                isDown = false;
+                rotationInertia();
             }
-        
-            function handleMouseOut(e){
-              isDown=false;
-              rotationInertia();
-            }
-        
-            function handleMouseMove(e){
-              if(!isDown){return;}        
-              mouseX=parseInt(e.clientX-offsetX);
-              mouseY=parseInt(e.clientY-offsetY);
-              dx=mouseX-cx;
-              dy=mouseY-cy;
-              newr=Math.atan2(dy,dx);
-              dr = newr - r;
-              console.log(dr)
-              r = newr;
-              draw();
-              setTimeout(()=>{
-                if(isDown){
-                    dr = 0
-                    console.log("stop")
-                }
-              }, 30)
-            }
-        
-            $("#myCanvas").mousedown(function(e){handleMouseDown(e);});
-            $("#myCanvas").mousemove(function(e){handleMouseMove(e);});
-            $("#myCanvas").mouseup(function(e){handleMouseUp(e);});
-            $("#myCanvas").mouseout(function(e){handleMouseOut(e);});
-        };
 
+            function handleMouseOut(e) {
+                isDown = false;
+                rotationInertia();
+            }
+
+            function handleMouseMove(e) {
+                if (!isDown) { return; }
+                mouseX = parseInt(e.clientX - offsetX);
+                mouseY = parseInt(e.clientY - offsetY);
+                dx = mouseX - cx;
+                dy = mouseY - cy;
+                newr = Math.atan2(dy, dx);
+                dr = newr - r;
+                r = newr;
+                draw();
+                setTimeout(() => {
+                    if (isDown) {
+                        dr = 0
+                    }
+                }, 100)
+            }
+
+            $("#myCanvas").mousedown(function (e) { handleMouseDown(e); });
+            $("#myCanvas").mousemove(function (e) { handleMouseMove(e); });
+            $("#myCanvas").mouseup(function (e) { handleMouseUp(e); });
+            $("#myCanvas").mouseout(function (e) { handleMouseOut(e); });
+        };
 
     </script>
 </head>
