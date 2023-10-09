@@ -9,12 +9,14 @@
     <link href="style.css" rel="stylesheet" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
+        var offsetX;
+        var offsetY;
         onload = (event) => {
             var canvas = document.getElementById('myCanvas');
             var ctx = canvas.getContext('2d');
             var canvasOffset = $("#myCanvas").offset();
-            var offsetX = canvasOffset.left;
-            var offsetY = canvasOffset.top;
+            offsetX = canvasOffset.left;
+            offsetY = canvasOffset.top;
             var isDown = false;
             var cx = canvas.width / 2;
             var cy = canvas.height / 2;
@@ -101,6 +103,12 @@
             $("#myCanvas").mouseup(function (e) { handleMouseUp(e); });
             $("#myCanvas").mouseout(function (e) { handleMouseOut(e); });
         };
+
+        onresize = (event) => {
+            var canvasOffset = $("#myCanvas").offset();
+            offsetX = canvasOffset.left;
+            offsetY = canvasOffset.top;
+        }
 
     </script>
 </head>
