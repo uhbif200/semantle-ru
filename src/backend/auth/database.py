@@ -13,7 +13,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from fastapi_users_db_sqlalchemy.generics import GUID, TIMESTAMPAware, now_utc
 
-DATABASE_URL = "sqlite+aiosqlite:///./semantle_ru.db"
+DATABASE_URL = "sqlite+aiosqlite:///../../res/web_content/semantle_ru.db"
 
 
 class Base(DeclarativeBase):

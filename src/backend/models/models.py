@@ -1,5 +1,4 @@
 from sqlalchemy import MetaData, Table, Column, Integer, String, TIMESTAMP, ForeignKey, Boolean
-from sqlalchemy.orm import mapped_column
 import datetime
 
 metadata = MetaData()
