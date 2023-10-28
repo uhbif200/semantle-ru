@@ -6,9 +6,11 @@ from auth.schemas import UserRead, UserCreate
 from auth.database import User
 from auth.manager import get_user_manager
 
+
 app = FastAPI(
-    title="Semantle Ru"
+    title="Semantle Ru",
 )
+
 
 # app.mount("/static", StaticFiles(directory="static"), name="static")
 
