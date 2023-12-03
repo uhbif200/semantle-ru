@@ -56,7 +56,7 @@ body {
 
 .header__logo-png {
     width: 53px;
-    height: 53px;   
+    height: 53px;
     background: url(img/colovrat.png);
 }
 
@@ -68,16 +68,21 @@ body {
 .header__item {
     margin-right: 14px;
 }
-.header__item:last-child{
+
+.header__item:last-child {
     margin-right: 0px;
 }
 
 .header__link {
+    border: none;
+    background: none;
     font-size: 13px;
     text-decoration: none;
 }
 
-.header__link:hover, .header__link:focus, .header__link:active{ 
+.header__link:hover,
+.header__link:focus,
+.header__link:active {
     opacity: 75%;
 }
 
@@ -129,7 +134,7 @@ body {
 
 .input__label {
     position: absolute;
-    top:30%;
+    top: 30%;
     background: pink;
     white-space: nowrap;
     transform: translate(0, 0);
@@ -149,12 +154,13 @@ body {
     background: transparent;
     border: 0;
 }
-      
-.input__field:focus, .input__field:not(:placeholder-shown) {
-    & + .input__label {
-    transform: translate(.25rem, -120%) scale(.8);
-    color: var(--color-accent);
-    background-color: white;
+
+.input__field:focus,
+.input__field:not(:placeholder-shown) {
+    &+.input__label {
+        transform: translate(.25rem, -120%) scale(.8);
+        color: var(--color-accent);
+        background-color: white;
     }
 }
 
@@ -176,8 +182,10 @@ body {
     font-size: 16px;
     font-style: normal;
     font-weight: 600;
-    line-height: 22px; /* 137.5% */
+    line-height: 22px;
+    /* 137.5% */
     letter-spacing: -0.32px;
+
     &:hover {
         opacity: 75%;
     }
@@ -198,21 +206,123 @@ body {
     font-style: normal;
     font-size: 16px;
     letter-spacing: -0.32px;
-} 
+}
 
-.words__table > thead td {
+.words__table>thead td {
     /* Body • Heavy */
     padding: 12px 16px;
     font-weight: 600;
-    line-height: 22px; /* 137.5% */
+    line-height: 22px;
+    /* 137.5% */
 }
 
-.words__table > tbody td {
+.words__table>tbody td {
     padding: 16px;
     font-weight: 400;
-    line-height: 22px; /* 137.5% */
+    line-height: 22px;
+    /* 137.5% */
 }
 
-.words__table > tbody > tr:last-child > td {
+.words__table>tbody>tr:last-child>td {
     border-bottom: 0px;
 }
+
+/* Auth Modal start */
+.modal {
+    display: none;
+    /* Hidden by default */
+    text-align: center;
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    display: inline-block;
+    background-color: #fefefe;
+    margin: 15%;
+    /* 15% from the top and centered */
+    padding: 20px;
+    padding-top: 10px;
+    border: 1px solid #888;
+    /* width: calc(min(25vh)); */
+    /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.form_auth_block_head_text {
+    margin-bottom: 10px;
+}
+
+.auth__input__rect {
+    display: flex;
+    height: 44px;
+    align-self: stretch;
+    justify-content: space-between;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+    border-radius: 2px;
+    border: solid;
+    border-width: 1px;
+    padding-left: 10px;
+    margin-bottom: 20px;
+}
+
+.toggles {
+    margin-bottom: 15px;
+    display: flex;
+}
+.toggle__input {
+    display: none;
+    &:checked + .toggle__label {
+        background-color: skyblue;
+        color: whitesmoke;
+    }
+}
+
+.toggle__label {
+    border-radius: 5px;
+    border: grey;
+    border-style: solid;
+    border-width: 1px;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    padding: 0;
+    margin: 0;
+    &:last-of-type {
+        border-left: 0;
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+        border-bottom-right-radius: 5px;
+        border-top-right-radius: 5px;
+    
+    }
+}
+/* Auth Modal end */

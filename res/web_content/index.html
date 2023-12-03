@@ -102,6 +102,52 @@
             $("#myCanvas").mousemove(function (e) { handleMouseMove(e); });
             $("#myCanvas").mouseup(function (e) { handleMouseUp(e); });
             $("#myCanvas").mouseout(function (e) { handleMouseOut(e); });
+
+            $('#authModal').on('mousedown', function (e) {
+                if (e.target !== this)
+                    return;
+                mouseDown = true;
+            });
+
+            $('#authModal').on('mouseup', function (e) {
+                if(e.target !== this){
+                    mouseDown = false;
+                    return;
+                }
+                if(mouseDown){
+                    document.getElementById('authModal').style.display = 'none'
+                }
+                mouseDown = false;
+            });
+
+
+            $('#reg-form').hide();
+            $('#reg-btn').on('click', function (e) {
+                $('#auth-form').hide();
+                $('#reg-form').show();
+            });
+            $('#auth-btn').on('click', function (e) {
+                $('#reg-form').hide();
+                $('#auth-form').show();
+            });
+
+            $('#reg-confirm-btn').on('click', function(e) {
+                var serializedForm = $("#reg-form").serializeArray();
+                var data = {};
+                $.each(serializedForm, function() {
+                    data[this.name] = this.value || '';
+                });
+                console.log(data);
+
+                $.ajax({
+                    type: "POST",
+                    url: window.location.href + "auth/register",
+                    data: JSON.stringify(data),
+                    success: function(){},
+                    dataType: "json",
+                    contentType : "application/json"
+                  });
+            });
         };
 
         onresize = (event) => {
@@ -110,10 +156,74 @@
             offsetY = canvasOffset.top;
         }
 
+
     </script>
 </head>
 
 <body>
+    <!-- The Modal -->
+    <div id="authModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('authModal').style.display = 'none'">&times;</span>
+            <br>
+            <div class="form_auth_block">
+                <div class="form_auth_block_content">
+                    <div class="toggles">
+                        <input type="radio" class="toggle__input" name="auth__reg" id="auth-btn" checked>
+                        <label for="auth-btn" class="toggle__label">Авторизация</label>
+                        <input type="radio" class="toggle__input" name="auth__reg" id="reg-btn">
+                        <label for="reg-btn" class="toggle__label">Регистрация</label>    
+                    </div>
+
+                    <!-- <p class="form_auth_block_head_text">Авторизация</p> -->
+                    <form class="form_auth_style form_auth_reg" action="auth/database/login" method="post" id="auth-form">
+                        <div class="form__container">
+                            <div class="auth__input__rect">
+                            <input type="email" class="input__field" name="username" placeholder="Введите имейл"
+                                required>
+                            </div>
+                        </div>
+                        <div class="form__container">
+                            <div class="auth__input__rect">
+                                <input type="password" class="input__field" name="password" placeholder="Введите пароль"
+                                required>
+                            </div>
+                        </div>
+                        <div class="form__container">
+                            <button class="form_auth_button btn" type="submit" name="form_auth_submit">Войти</button>
+                        </div>
+                    </form>
+
+                    <form class="form_reg_style form_auth_reg" id="reg-form">
+                        <div class="form__container">
+                            <div class="auth__input__rect">
+                            <input type="email" class="input__field" name="email" placeholder="Введите имейл"
+                                required>
+                            </div>
+                        </div>
+                        <div class="form__container">
+                            <div class="auth__input__rect">
+                            <input type="text" class="input__field" name="username" placeholder="Введите имя пользователя"
+                                required>
+                            </div>
+                        </div>
+                        <div class="form__container">
+                            <div class="auth__input__rect">
+                                <input type="password" class="input__field" name="password" placeholder="Введите пароль"
+                                required>
+                            </div>
+                        </div>
+                        <div class="form__container">
+                            <button class="form_auth_button btn" type="button" name="form_auth_submit" id="reg-confirm-btn">Регистрация</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="wrapper">
         <div class="content">
             <header class="header">
@@ -123,7 +233,8 @@
                 <nav class="header__nav">
                     <ul class="header__list">
                         <li class="header__item">
-                            <a href="" class="header__link">Вход</a>
+                            <button class="header__link"
+                                onclick="document.getElementById('authModal').style.display = 'block';">Вход</button>
                         </li>
                         <li class="header__item">
                             <a href="" class="header__link">Как играть</a>
