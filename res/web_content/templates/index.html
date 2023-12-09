@@ -157,6 +157,92 @@
         }
 
 
+        const GameStates = {uninitialized : '', gameplay : '', win : ''}; 
+
+        class SemantleGame {
+            constructor(websocket) {
+                this.websocket = websocket;
+                this.state = GameStates.uninitialized;
+                this.websocket.addEventListener("message", (event) => {
+                    this.onMessage(event.data);
+                })
+            }
+
+            initGame() {
+                var data = {
+                    type: "init"
+                }
+                this.websocket.send(JSON.stringify(data));
+            }
+
+            handleWord(word) {
+                var data = {
+                    type: "word",
+                    word: word,
+                }
+                this.websocket.send(JSON.stringify(data));
+            }
+
+            onMessage(msg) {
+                var msg_json = JSON.parse(msg);
+                if(!msg_json.hasOwnProperty("type")) {
+                    console.log("Message not contain type")
+                    return
+                }
+                if(msg_json["type"] == "error"){
+                    console.log("Error " + msg_json["text"]);
+                    return;
+                }
+                if(msg_json["type"] == "word"){
+                    console.log("Word " + msg_json["word"] + " " + msg_json["similarity"]);
+                    if(msg_json["similarity"] == null) {
+                        console.log('Нет такого слова')
+                        return;
+                    }
+                    appendWordToTable(msg_json["word"], msg_json["similarity"]);
+                    return;
+                }
+            }
+        }
+
+        var ws = new WebSocket("ws://" + window.location.host + "/ws");
+
+        var game = new SemantleGame(ws);
+
+        function sendWord() {
+            if(game.sate == GameStates.uninitialized){
+                game.initWord()
+            }
+            game.handleWord($('#input-word').val())
+        }
+
+        function createWordRow(number, word, similarity) {
+            var row = $("<tr>");
+            row.append($("<td>").html(number));
+            row.append($("<td>").html(word));
+            row.append($("<td>").html(similarity));
+            return row;
+        }
+
+        function appendWordToTable(word, similarity) {
+            var tbody = $('.words__table > tbody');
+            var rows = tbody.children('tr');
+            if(rows.length == 0) {
+                tbody.append(createWordRow(1, word, similarity));
+                return;
+            }
+
+            for(var i = 0; i < rows.length; i++) {
+                var cur = parseFloat(rows.eq(i).children('td').eq(2)[0].innerHTML)
+                if(cur < similarity) {
+                    rows.eq(i).before(createWordRow(rows.length + 1, word, similarity));
+                    return;
+                }                
+            }
+
+            tbody.append(createWordRow(rows.length, word, similarity))
+        }
+
     </script>
 </head>
 
@@ -249,12 +335,13 @@
                 <div class="naming__wrapper">
                     <a class="naming">NUIHUETA</a>
                 </div>
+
                 <div class="input__rect">
                     <label class="input">
-                        <input class="input__field" type="text" placeholder=" " />
+                        <input class="input__field" type="text" placeholder=" " id="input-word"/>
                         <span class="input__label">Введите слово</span>
                     </label>
-                    <button class="btn">Поехали</button>
+                    <button class="btn" onclick="sendWord()">Поехали</button>
                 </div>
 
                 <table class="words__table">
@@ -266,16 +353,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Дверь</td>
-                            <td>80</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Очко</td>
-                            <td>10</td>
-                        </tr>
                     </tbody>
                 </table>
             </main>
