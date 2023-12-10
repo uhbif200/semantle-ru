@@ -211,9 +211,9 @@
 
         function sendWord() {
             if(game.sate == GameStates.uninitialized){
-                game.initWord()
+                game.initWord();
             }
-            game.handleWord($('#input-word').val())
+            game.handleWord($('#input-word').val().toLowerCase());
         }
 
         function createWordRow(number, word, similarity) {
